@@ -25,18 +25,23 @@ export const AuthProvider = ({ children }) => {
   }, []);
   
   const login = async (email, senha) => {
-    const response = await api.post('/auth/login', { email, senha });
-    
-    const { token, user } = response.data;
-    
-    localStorage.setItem('@FarmaUP:user', JSON.stringify(user));
-    localStorage.setItem('@FarmaUP:token', token);
-    
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    
-    setUser(user);
-    
-    return user;
+    try {
+      const response = await api.post('/auth/login', { email, senha });
+      
+      const { token, user } = response.data;
+      
+      localStorage.setItem('@FarmaUP:user', JSON.stringify(user));
+      localStorage.setItem('@FarmaUP:token', token);
+      
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      setUser(user);
+      
+      return user;
+    } catch (error) {
+      console.error('Erro de login:', error);
+      throw error;
+    }
   };
   
   const logout = () => {
